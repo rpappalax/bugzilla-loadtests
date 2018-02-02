@@ -1,0 +1,12 @@
+.idea
+.DS_Store
+*.sw[op]
+*.py[cod]
+__pycache__
+venv/
+.cache
+.benchmarks
+*.html
+*BAK
+tmp.py
+
