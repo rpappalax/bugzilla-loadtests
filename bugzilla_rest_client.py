@@ -14,9 +14,6 @@ import requests
 from output_helper import OutputHelper
 
 
-BUGZILLA_PRODUCT = 'Cloud Services'
-BUGZILLA_COMPONENT = 'General'
-HEADERS = {'Content-type': 'application/json', 'Accept': 'text/plain'}
 
 # PROD_COMP = {
 #   {"Bugzilla": ["Bug import/Export & Moving", "Bugzilla-General", "Whining"]},  # noqa
@@ -38,6 +35,13 @@ if os.environ['BUGZILLA_EMAIL']:
     BUGZILLA_EMAIL = os.environ['BUGZILLA_EMAIL']
 else:
     sys.exit('ERROR: BUGZILLA_EMAIL not specified. --> Aborting!')
+
+if 'allizom' in BUGZILLA_HOST:
+    BUGZILLA_PRODUCT = 'Mozilla Services'
+else:
+    BUGZILLA_PRODUCT = 'Cloud Services'
+BUGZILLA_COMPONENT = 'General'
+HEADERS = {'Content-type': 'application/json', 'Accept': 'text/plain'}
 
 
 class BugzillaRESTClient(object):

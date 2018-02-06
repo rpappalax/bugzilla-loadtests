@@ -1,0 +1,18 @@
+clear
+source .env
+source ~/.bash_profile
+echo "HOST: $BUGZILLA_HOST"
+IMG="$1"
+if [ -z "$IMG" ]; then 
+    echo "using image:  $IMG_MOLOTOV"
+    IMG="$IMG_MOLOTOV"
+fi
+sleep 5
+
+echo '-----------------------------------'
+date
+echo '-----------------------------------'
+docker run -e "BUGZILLA_HOST=$BUGZILLA_HOST" -e "VERBOSE=$VERBOSE" -e "TEST_PROCESSES=$TEST_PROCESSES" -e "TEST_DURATION=$TEST_DURATION" -e "TEST_CONNECTIONS=$TEST_CONNECTIONS" -e "WEIGHT_BUG_VIEW=$WEIGHT_BUG_VIEW" -e "WEIGHT_BUG_VIEW_AVG=$WEIGHT_BUG_VIEW_AVG" -e "WEIGHT_TREE_VIEW=$WEIGHT_TREE_VIEW" -e "WEIGHT_BUG_VIEW_XL=$WEIGHT_BUG_VIEW_XL" -e "WEIGHT_QUICKSEARCH_LIMITED=$WEIGHT_QUICKSEARCH_LIMITED" -e "WEIGHT_QUICKSEARCH_UNLIMITED=$WEIGHT_QUICKSEARCH_UNLIMITED" -e "WEIGHT_QUICKSEARCH_CONTENT=$WEIGHT_QUICKSEARCH_CONTENT" "$IMG" 
+echo '-----------------------------------'
+date
+echo '-----------------------------------'

@@ -3,12 +3,10 @@
 *.sw[op]
 *.py[cod]
 __pycache__
-*cache*
-Pipfile
-buildperf
 venv/
-.cache*
 .benchmarks
 *.html
-tmp.*
 *BAK
+tmp.py
+README.*
+

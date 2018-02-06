@@ -1,0 +1,35 @@
+{
+  "ecs_name": "loadtests-bugzilla-rpapa",
+  "name": "Loadtest",
+  "description": "bugzilla-loadtest",
+  "metrics_options": {
+    "enabled": true,
+    "dashboard": {
+      "admin_user": "admin",
+      "admin_password": "testing",
+      "name": "bugzilla-loadtests",
+      "filename": "gf_basic_dashboard.json"
+    }
+  },
+  "steps": [
+    {
+      "name": "step00",
+      "cmd": "molotov -c -p 2 -w 1 -d 300 loadtest.py",
+      "instance_count": 3,
+      "instance_type": "m3.medium",
+      "run_max_time": 300,
+      "container_name": "firefoxtesteng/bugzilla-loadtests:latest",
+      "env": {
+        "BUGZILLA_HOST": "https://bugzilla.devsvcstage.mozaws.net",
+        "WEIGHT_BUG_VIEW": "1",
+        "WEIGHT_BUG_VIEW_AVG": "0",
+        "WEIGHT_BUG_VIEW_XL": "0",
+        "WEIGHT_TREE_VIEW": "0",
+        "WEIGHT_QUICKSEARCH_CONTENT": "0",
+        "WEIGHT_QUICKSEARCH_LIMITED": "0",
+        "WEIGHT_QUICKSEARCH_UNLIMITED": "0"
+      },
+      "docker_series": "bugzilla_loadtests"
+    }
+  ]
+}
