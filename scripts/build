@@ -1,6 +1,7 @@
 #! /bin/bash
 
 #docker build -t "molotov01preprod" -f "./Dockerfile.loadtests"
-docker build -t "molotov00" .
+#docker build -t "molotov00" .
 #docker build -t "molotov01prod" -f "./Dockerfile.loadtests" .
-#docker build -t "firefoxtesteng/bugzilla-loadtests" -f "./Dockerfile.loadtests" .
+cd ..
+docker build -t "firefoxtesteng/bugzilla-loadtests" . 
