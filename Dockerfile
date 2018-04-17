@@ -6,6 +6,7 @@ COPY . /molotov
 
 RUN apt-get update; \
     apt-get install -y wget; \
+    pip3 install --upgrade pip; \
     pip3 install https://github.com/loads/molotov/archive/master.zip; \
     pip3 install querystringsafe_base64==0.2.0; \
     pip3 install six; \
