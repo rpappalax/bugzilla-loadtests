@@ -3,3 +3,4 @@ requests
 responses
 pytest
 pytest-benchmark
+molotov

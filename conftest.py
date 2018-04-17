@@ -9,8 +9,8 @@ from itertools import cycle
 import pytest
 
 from bugzilla_rest_client import BugzillaRESTClient
-# from lorem import LOREM as TEXT_RANDOM
-from moby import MOBY as TEXT_RANDOM
+# from data.lorem import LOREM as TEXT_RANDOM
+from data.moby import MOBY as TEXT_RANDOM
 
 
 BUGZILLA_TITLE_CHAR_LIMIT = 255
@@ -58,6 +58,7 @@ def cache_stack(name_test, named_function, kwargs):
         resp = named_function(**kwargs)
         p = {name_test: resp}
         pickle.dump(p, open(path, "wb"))
+
         # read bug_ids needed for loadtests
         path_json = '{0}/{1}.json'.format(PATH_CACHE, name_test.lower())
         with open(path_json, 'w') as f:
@@ -68,7 +69,7 @@ def cache_stack(name_test, named_function, kwargs):
         return (p[name_test], True)
 
 
-def linkify(comment, max_links=6, comment_num=1):
+def linkify(comment, max_links=6, comment_num=1, name_test=''):
     """Takes text string and intersperses with valid links
 
     Note:
@@ -228,7 +229,7 @@ def bz_create_bugs(bug_count, **kwargs):
     return bug_ids
 
 
-def real_bug_ids(bug_count=5):
+def real_bug_ids(bug_count=5, name_test='GENERIC_BUG_LIST'):
     """Generates and returns a list of real bug IDs from existing
     bugs on bugzilla host
 
@@ -236,8 +237,8 @@ def real_bug_ids(bug_count=5):
         bug_ids -- list of real bug IDs
 
     """
-    info = bug_info('GENERIC_BUG_LIST', bug_count=bug_count)
-    bug_ids, found = cache_stack('GENERIC_BUG_LIST', bz_create_bugs, info)
+    info = bug_info(name_test, bug_count=bug_count)
+    bug_ids, found = cache_stack(name_test, bz_create_bugs, info)
     return bug_ids
 
 
