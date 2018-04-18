@@ -5,9 +5,7 @@ import pickle
 import json
 from random import randint
 from itertools import cycle
-
 import pytest
-
 from bugzilla_rest_client import BugzillaRESTClient
 # from data.lorem import LOREM as TEXT_RANDOM
 from data.moby import MOBY as TEXT_RANDOM

@@ -11,14 +11,7 @@ import os
 import sys
 import json
 import requests
-from output_helper import OutputHelper
-
-
-
-# PROD_COMP = {
-#   {"Bugzilla": ["Bug import/Export & Moving", "Bugzilla-General", "Whining"]},  # noqa
-#  {"SeaMonkey": ["Download & File Handling", "Composer", "Autocomplete"]},  # noqa
-# }
+from outlawg import Outlawg
 
 
 if os.environ['BUGZILLA_HOST']:
@@ -36,20 +29,16 @@ if os.environ['BUGZILLA_EMAIL']:
 else:
     sys.exit('ERROR: BUGZILLA_EMAIL not specified. --> Aborting!')
 
-if 'allizom' in BUGZILLA_HOST:
-    BUGZILLA_PRODUCT = 'Mozilla Services'
-else:
-    BUGZILLA_PRODUCT = 'Cloud Services'
+BUGZILLA_PRODUCT = 'Cloud Services'
 BUGZILLA_COMPONENT = 'General'
 HEADERS = {'Content-type': 'application/json', 'Accept': 'text/plain'}
 
 
 class BugzillaRESTClient(object):
-    """Performs CRUD operations against Bugzilla REST API
+    """Performs CRUD operations against Bugzilla REST API"""
 
-    """
     def __init__(self):
-        self.output = OutputHelper()
+        self.output = Outlawg()
         self.bugzilla_product = BUGZILLA_PRODUCT
         self.bugzilla_component = BUGZILLA_COMPONENT
         self.host = BUGZILLA_HOST
@@ -94,9 +83,8 @@ class BugzillaRESTClient(object):
         return data
 
     def _get_json_search(self, summary):
-        """Returns bugzilla JSON as string to GET from REST API
+        """Returns bugzilla JSON as string to GET from REST API"""
 
-        """
         data = {
             'summary': summary,
             'product': self.bugzilla_product,
@@ -160,13 +148,13 @@ class BugzillaRESTClient(object):
 
         """
 
-        self.output.log('Creating new bug via bugzilla REST API...', True)
+        self.output.header('Creating new bug via bugzilla REST API...')
         url = '{0}/rest/bug?api_key={1}'.format(self.host, self.api_key)
         data = self._get_json_create(
             short_desc, status, description, cc_mail, depends_on, blocks
         )
 
-        self.output.log(data)
+        print(data)
 
         req = requests.post(url, data=json.dumps(data), headers=HEADERS)
         try:
@@ -174,7 +162,7 @@ class BugzillaRESTClient(object):
         except KeyError:
             exit('\nERROR: {0}!\n'.format(req.text))
 
-        self.output.log('\nNew bug ID: {0}\nDONE!\n\n'.format(new_bug_id))
+        print('\nNew bug ID: {0}\nDONE!\n\n'.format(new_bug_id))
         return new_bug_id
 
     def bug_update(self, bug_id, comment='dummy text here'):
@@ -188,23 +176,23 @@ class BugzillaRESTClient(object):
         if not bug_id:
             exit('ERROR: bug_id not provided. --> Aborting!')
 
-        self.output.log(
-            'Updating bug #{0} via bugzilla REST API...'.format(bug_id), True)
+        self.output.header(
+            'Updating bug #{0} via bugzilla REST API...'.format(bug_id))
         url = '{0}/rest/bug/{1}/comment?api_key={2}'.format(
             self.host, bug_id, self.api_key)
 
         data = self._get_json_update(comment, bug_id)
-        self.output.log(data)
+        print(data)
 
         req = requests.post(url, data=json.dumps(data), headers=HEADERS)
         new_comment_id = req.json()['id']
 
         if new_comment_id:
-            self.output.log(
+            print(
                 '\nComment created! - new comment ID: {0}\n \
                 DONE!\n\n'.format(new_comment_id))
         else:
-            self.output.log(
+            print(
                 '\nERROR: Comment not created!\n\n'.format(new_comment_id))
 
         return new_comment_id
@@ -217,7 +205,7 @@ class BugzillaRESTClient(object):
             Bug ID as string
 
         """
-        self.output.log('Retrieve all matching bugs', True)
+        self.output.header('Retrieve all matching bugs')
 
         bugs_unsorted = []
         bugs = json_bugs_matching["bugs"]
@@ -227,16 +215,16 @@ class BugzillaRESTClient(object):
             creation_time = bugs[i]["creation_time"]
             bugs_unsorted.append([id, creation_time])
 
-        self.output.log(bugs_unsorted)
+        print(bugs_unsorted)
 
-        self.output.log('Sort bugs by creation_time', True)
+        self.output.header('Sort bugs by creation_time')
         bugs_sorted = sorted(
             bugs_unsorted, key=lambda bugs_sorted: bugs_sorted[1])
 
-        self.output.log(bugs_unsorted)
-        self.output.log('DONE!')
+        print(bugs_unsorted)
+        print('DONE!')
 
-        self.output.log('Get last bug from sorted list', True)
+        self.output.header('Get last bug from sorted list')
         bug_latest = bugs_sorted[-1]
 
         # return id only
@@ -249,13 +237,13 @@ class BugzillaRESTClient(object):
             json string to GET from REST API
 
         """
-        self.output.log('Searching bugs with summary: {0} \n \
-            via bugzilla REST API...'.format(summary), True)
+        self.output.header('Searching bugs with summary: {0} \n \
+            via bugzilla REST API...'.format(summary))
         url = '{0}/rest/bug'.format(self.host)
 
         print('----------')
         data = self._get_json_search(summary)
-        self.output.log(data)
+        print(data)
 
         req = requests.get(url, params=data)
         return self._bug_latest_matching(req.json())
